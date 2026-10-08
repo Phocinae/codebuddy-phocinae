@@ -4,7 +4,7 @@
 Bash 命令审批门（PreToolUse 硬门，deny 优先、fail-closed、全程本地无外联）+
 决策提问技能 + 可选 phocinae-mcp 挂载。
 
-> 状态：本地开发包（未发布、未推送）。许可：Apache-2.0。
+> 状态：已发布（公开仓）。许可：Apache-2.0。
 > 斑海豹是决策模型而非生成模型：它只输出结构化判定与概率，不能当 chat 后端
 > 塞进「自定义模型」栏位——请勿混淆。
 
@@ -47,7 +47,7 @@ hook 层在权限系统之上：即使 bypass/yolo 模式，PreToolUse 的 deny 
 
 - 方式一 · 本地开发：CodeBuddy 插件目录直接指向本仓（`/plugin` 本地目录加载），
   hooks 与 skills 随插件启用即生效。
-- 方式二 · 自建市场（待发布后）：发布到
+- 方式二 · 自建市场：发布到
   `phocinae/codebuddy-marketplace` 后，
   `/plugin marketplace add phocinae/codebuddy-marketplace` →
   `/plugin install codebuddy-phocinae@phocinae-codebuddy-marketplace`。
@@ -77,10 +77,9 @@ guard 模式透传 `PHOCINAE_GUARD_*` 全部环境变量（L1 开关、fail-clos
   `PHOCINAE_GUARD_L1_ENABLED=true`（P1 需领域微调 + 标定电池）。
 - **时延**：L0 毫秒级；L1 本机 GPU p50 18.6ms / CPU 数十至数百 ms（blocking hook
   预算 <~150ms 时建议 GPU 或收紧白名单）。
-- **`.mcp.json` 为占位模板**：phocinae-mcp（对应 seal-mcp 仓）尚未发布，
-  实际包名以发布为准；为避免插件启用即拉起未发布包，plugin.json 暂未声明
-  `mcpServers` 字段——seal-mcp 落地后在 plugin.json 补 `"mcpServers": "./.mcp.json"`
-  即可生效。
+- **`.mcp.json` 为占位模板**：配套 [phocinae-mcp](https://github.com/Phocinae/phocinae-mcp)
+  已公开；为避免插件启用即自动拉起 MCP 包，plugin.json 暂未声明
+  `mcpServers` 字段——需要时在 plugin.json 补 `"mcpServers": "./.mcp.json"` 即可生效。
 - 斑海豹拒绝 ≠ 终止：升级路径 = 人工确认 / 更强模型复核。
 
 ## 6. 自测
