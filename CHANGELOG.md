@@ -11,7 +11,7 @@
 - `hooks/hooks.json` + `hooks/phocinae_gate.py`：PreToolUse(Bash) 审批门 hook，
   guard / http 双裁决后端，fail-closed（exit 2 硬阻断）。
 - `skills/phocinae-gate/SKILL.md`：决策提问技能（与 Claude Code 插件同构）。
-- `.mcp.json`：phocinae-mcp stdio 挂载占位模板（seal-mcp 发布后生效）。
+- `.mcp.json`：phocinae-mcp stdio 挂载模板。
 - `tests/validate_json.py` + `tests/run_tests.sh`：JSON 校验与良性/危险命令自测。
 - README.md（中文）与 Apache-2.0 LICENSE。
 

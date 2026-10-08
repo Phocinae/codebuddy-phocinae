@@ -42,7 +42,7 @@ hook 层在权限系统之上：即使 bypass/yolo 模式，PreToolUse 的 deny 
 ## 3. 安装
 
 前置：`python3`（≥3.8）；phocinae-guard（默认
-`/home/hermes/dev/phocinae-guard/guard.py`，可经 `PHOCINAE_GATE_GUARD` 改路径）；
+phocinae-guard 的 `guard.py`，可经 `PHOCINAE_GATE_GUARD` 改路径）；
 可选 phocinae-server（127.0.0.1:8155，起服务后灰区命令才走模型裁决）。
 
 - 方式一 · 本地开发：CodeBuddy 插件目录直接指向本仓（`/plugin` 本地目录加载），
@@ -57,7 +57,7 @@ hook 层在权限系统之上：即使 bypass/yolo 模式，PreToolUse 的 deny 
 | 环境变量 | 默认 | 说明 |
 |---|---|---|
 | `PHOCINAE_GATE_MODE` | `guard` | 裁决后端：`guard`（L0+L1+fail-closed）或 `http`（直连 /v1/systemone，仅 L1） |
-| `PHOCINAE_GATE_GUARD` | `/home/hermes/dev/phocinae-guard/guard.py` | guard 脚本路径 |
+| `PHOCINAE_GATE_GUARD` | `<phocinae-guard 安装路径>/guard.py` | guard 脚本路径 |
 | `PHOCINAE_GATE_SERVER` | `http://127.0.0.1:8155` | L1 服务基地址 |
 | `PHOCINAE_GATE_TIMEOUT` | `2.0` | http 模式超时秒数 |
 | `PHOCINAE_GATE_NOUL_THRESHOLD` | `0.65` | noul 放行阈值 |
