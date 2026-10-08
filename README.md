@@ -31,7 +31,7 @@ codebuddy-phocinae/
 ```
 Bash 命令
   ├─ L0 确定性表（guard.py 内置；黑名单 deny-wins，白名单放行，~0ms）
-  ├─ L1 斑海豹裁决（POST /v1/systemone：guard_noul + guard_score，GPU p50 18.6ms）
+  ├─ L1 斑海豹裁决（POST /v1/systemone：guard_noul + guard_score，GPU p50 21.0ms（RTX 5090））
   └─ 阈值映射：score≥7 或 noul=false → deny；score≥4 / noul 摇摆 → ask；否则 allow
 不可变式：只有 allow 能过门；deny/ask 非零退出；后端崩溃/超时 → exit 2 硬阻断
 （fail-closed，绝不自动放行）。
@@ -77,7 +77,7 @@ guard 模式透传 `PHOCINAE_GUARD_*` 全部环境变量（L1 开关、fail-clos
 - **L1 默认关闭**：150M 权重未做命令审批域校准（实测信号≈噪声），灰区一律
   fail-closed=deny——这是保守策略，不是故障；需要模型裁决时由管理员显式开
   `PHOCINAE_GUARD_L1_ENABLED=true`（P1 需领域微调 + 标定电池）。
-- **时延**：L0 毫秒级；L1 本机 GPU p50 18.6ms / CPU 数十至数百 ms（blocking hook
+- **时延**：L0 毫秒级；L1 本机 GPU p50 21.0ms（RTX 5090） / CPU 数十至数百 ms（blocking hook
   预算 <~150ms 时建议 GPU 或收紧白名单）。
 - **`.mcp.json` 为占位模板**：配套 [phocinae-mcp](https://github.com/Phocinae/phocinae-mcp)
   已公开；为避免插件启用即自动拉起 MCP 包，plugin.json 暂未声明
