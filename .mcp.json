@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "phocinae-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "phocinae-mcp"
+      ],
+      "env": {
+        "PHOCINAE_ENDPOINT": "http://127.0.0.1:8155/v1/systemone"
+      }
+    }
+  }
+}

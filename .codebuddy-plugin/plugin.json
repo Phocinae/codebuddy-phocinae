@@ -1,0 +1,23 @@
+{
+  "name": "codebuddy-phocinae",
+  "displayName": "codebuddy-phocinae",
+  "version": "0.1.0",
+  "description": "斑海豹（Phocinae Largha-150M-v1）本地非生成式决策模型审批门：PreToolUse 硬门拦截 Bash 命令，L0 确定性表 + L1 /v1/systemone 模型裁决，deny 优先、fail-closed、全程本地无外联；附决策提问技能（与 Claude Code 插件同构）与可选 phocinae-mcp 挂载模板。",
+  "author": {
+    "name": "Phocinae",
+    "url": "https://github.com/phocinae"
+  },
+  "homepage": "https://github.com/phocinae/codebuddy-phocinae",
+  "repository": "https://github.com/phocinae/codebuddy-phocinae",
+  "license": "Apache-2.0",
+  "keywords": [
+    "guard",
+    "security",
+    "approval",
+    "decision-model",
+    "phocinae",
+    "codebuddy"
+  ],
+  "hooks": "./hooks/hooks.json",
+  "skills": "./skills"
+}
