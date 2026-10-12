@@ -1,13 +1,17 @@
 {
+  "_comment": "phocinae-mcp 走 PyPI，不走 npm：`npx -y phocinae-mcp` 必然失败（npm 上无此包）。请先 `pip install phocinae-mcp`，再用下面的形态；Windows 上 python3 通常要写成 python 或 py -3。",
   "mcpServers": {
-    "phocinae-mcp": {
-      "command": "npx",
+    "phocinae": {
+      "command": "python3",
       "args": [
-        "-y",
-        "phocinae-mcp"
+        "-m",
+        "phocinae_mcp",
+        "--server",
+        "http://127.0.0.1:8155"
       ],
       "env": {
-        "PHOCINAE_ENDPOINT": "http://127.0.0.1:8155/v1/systemone"
+        "PHOCINAE_MCP_L1_ENABLED": "0",
+        "PHOCINAE_MCP_TIMEOUT": "5"
       }
     }
   }

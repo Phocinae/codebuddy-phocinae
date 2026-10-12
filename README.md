@@ -29,7 +29,7 @@ Bash 命令审批门（PreToolUse 硬门，deny 优先、fail-closed、全程本
 codebuddy-phocinae/
 ├── .codebuddy-plugin/          # 仅放 manifest 与市场清单（Claude Code 插件同构规范）
 │   ├── plugin.json             # name/version/license + hooks/skills 声明
-│   └── marketplace.json        # 自建市场清单（phocinae/codebuddy-marketplace）
+│   └── marketplace.json        # 自建市场清单（Phocinae/codebuddy-marketplace）
 ├── hooks/
 │   ├── hooks.json              # PreToolUse(Bash) → phocinae_gate.py
 │   └── phocinae_gate.py        # 审批门 hook（stdlib-only，guard/http 双后端）
@@ -66,8 +66,8 @@ phocinae-guard 的 `guard.py`，可经 `PHOCINAE_GATE_GUARD` 改路径）；
 - 方式一 · 本地开发：CodeBuddy 插件目录直接指向本仓（`/plugin` 本地目录加载），
   hooks 与 skills 随插件启用即生效。
 - 方式二 · 自建市场：发布到
-  `phocinae/codebuddy-marketplace` 后，
-  `/plugin marketplace add phocinae/codebuddy-marketplace` →
+  `Phocinae/codebuddy-marketplace` 后，
+  `/plugin marketplace add Phocinae/codebuddy-marketplace` →
   `/plugin install codebuddy-phocinae@phocinae-codebuddy-marketplace`。
 
 ## 4. 配置
@@ -95,9 +95,13 @@ guard 模式透传 `PHOCINAE_GUARD_*` 全部环境变量（L1 开关、fail-clos
   `PHOCINAE_GUARD_L1_ENABLED=true`（P1 需领域微调 + 标定电池）。
 - **时延**：L0 毫秒级；L1 本机 GPU p50 21.0ms（RTX 5090） / CPU 数十至数百 ms（blocking hook
   预算 <~150ms 时建议 GPU 或收紧白名单）。
-- **`.mcp.json` 为占位模板**：配套 [phocinae-mcp](https://github.com/Phocinae/phocinae-mcp)
+- **`.mcp.json` 为可选挂载模板**：配套 [phocinae-mcp](https://github.com/Phocinae/phocinae-mcp)
   已公开；为避免插件启用即自动拉起 MCP 包，plugin.json 暂未声明
   `mcpServers` 字段——需要时在 plugin.json 补 `"mcpServers": "./.mcp.json"` 即可生效。
+  ⚠ **它走 PyPI，不走 npm**：先 `pip install phocinae-mcp`，再由
+  `python -m phocinae_mcp` 拉起。早期模板误写成 `npx -y phocinae-mcp`，
+  那条命令**永远不可能成功**（npm 上没有这个包名），已修正并在
+  `tests/validate_json.py` 里加了断言防止回退。
 - 斑海豹拒绝 ≠ 终止：升级路径 = 人工确认 / 更强模型复核。
 
 ## 6. 自测

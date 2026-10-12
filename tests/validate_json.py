@@ -92,9 +92,24 @@ def main():
 
     c = load_json(".mcp.json")
     if c is not None:
-        srv = (c.get("mcpServers") or {}).get("phocinae-mcp")
-        chk(".mcp.json phocinae-mcp 条目", isinstance(srv, dict)
+        servers = c.get("mcpServers") or {}
+        # The entry is named `phocinae`. It used to be `phocinae-mcp`, and it used
+        # to run `npx -y phocinae-mcp`, which can never work: that package is
+        # published on PyPI only, so npm has no such name. Assert both the shape
+        # and the transport, so the broken form cannot come back.
+        srv = servers.get("phocinae")
+        chk(".mcp.json phocinae 条目", isinstance(srv, dict)
             and bool(srv.get("command")), "entry=%r" % srv)
+        if isinstance(srv, dict):
+            command = str(srv.get("command") or "")
+            args = srv.get("args") or []
+            chk(".mcp.json 不通过 npm 拉起 phocinae-mcp（该包只在 PyPI）",
+                "npx" not in command and "npm" not in command,
+                "command=%r args=%r" % (command, args))
+            chk(".mcp.json 以 python -m phocinae_mcp 启动",
+                "python" in command and list(args)[:1] == ["-m"]
+                and "phocinae_mcp" in args,
+                "command=%r args=%r" % (command, args))
 
     chk("skills/SKILL.md 存在",
         os.path.isfile(os.path.join(REPO, "skills/phocinae-gate/SKILL.md")))
