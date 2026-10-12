@@ -1,0 +1,46 @@
+# CI for codebuddy-phocinae.
+#
+# This repo is a CodeBuddy plugin, not a published package: there is no registry
+# to publish to and nothing to install, so this workflow only runs the two
+# stdlib-only suites that validate the plugin's contract.
+#
+#   * tests/validate_json.py checks the plugin/marketplace manifests, hooks.json,
+#     .mcp.json and the referenced files on disk (must print "validate_json: 22/22").
+#   * tests/test_gate_hook.py exercises the PreToolUse gate hook end to end (must
+#     print "test_gate_hook: 21/21"). It redirects HOME and USERPROFILE to a
+#     temporary directory for every hook invocation, so it never writes to the
+#     runner's real user profile.
+#
+# ubuntu + windows only: the hook's shell layer has a Windows path (native
+# cmd.exe) and a POSIX path (sh), and those are the two that can actually drift.
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: plugin suites (py${{ matrix.python-version }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.9', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Must end with: validate_json: 22/22
+      - name: Plugin manifest / JSON validation
+        run: python tests/validate_json.py
+
+      # Must end with: test_gate_hook: 21/21
+      - name: Gate-hook regression suite
+        run: python tests/test_gate_hook.py

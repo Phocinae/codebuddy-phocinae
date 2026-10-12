@@ -5,7 +5,7 @@
     "hooks": [
       {
         "type": "command",
-        "command": "python3 \"$CODEBUDDY_PLUGIN_ROOT/hooks/phocinae_gate.py\"",
+        "command": "python3 \"$CODEBUDDY_PLUGIN_ROOT/hooks/phocinae_gate.py\" || exit 2",
         "timeout": 15
       }
     ]

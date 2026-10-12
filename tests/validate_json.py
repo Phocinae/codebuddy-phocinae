@@ -81,9 +81,13 @@ def main():
                 "hooks=%r" % cmds)
             if cmds:
                 cmd = cmds[0].get("command") or ""
-                rel = cmd.split("$CODEBUDDY_PLUGIN_ROOT/")[-1].strip('"')
-                path = os.path.join(REPO, rel)
-                chk("hook.command 引用脚本存在", os.path.exists(path),
+                # 命令里脚本路径以引号结束，后面还要挂 fail-closed 收尾
+                # （`|| exit 2`），所以按引号切，而不是按行尾切。
+                rel = ""
+                if "$CODEBUDDY_PLUGIN_ROOT/" in cmd:
+                    rel = cmd.split("$CODEBUDDY_PLUGIN_ROOT/", 1)[1].split('"', 1)[0]
+                path = os.path.join(REPO, rel.strip())
+                chk("hook.command 引用脚本存在", bool(rel) and os.path.exists(path),
                     "%s → %s" % (cmd, path))
 
     c = load_json(".mcp.json")

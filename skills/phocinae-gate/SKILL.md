@@ -30,8 +30,12 @@ Bash 命令 → L0 确定性表（~0ms，无模型）
 - 运行风险命令前，先本地预判（L0 表免费、毫秒级）：
 
   ```bash
-  python3 /home/hermes/dev/phocinae-guard/guard.py --command '要跑的命令' --text
+  python <phocinae-guard 安装路径>/guard.py --command '要跑的命令' --text
   ```
+
+  （`<phocinae-guard 安装路径>` 是占位符，示例 `/opt/phocinae-guard/guard.py` /
+  `%USERPROFILE%\dev\phocinae-guard\guard.py`；Windows 上解释器通常写 `python`
+  或 `py -3`。hook 自身用哪个 guard 由 `PHOCINAE_GATE_GUARD` 决定，见 README。）
 
   exit 0 = 会放行；exit 1 = 会被 deny；exit 2 = 会被 ask。
 - 被拦了不要原地重试同款命令（换参数/换写法绕门 = 对抗行为，会被视为风险信号）。
@@ -72,5 +76,7 @@ TypeSafe 协议一以贯之的原则，提问时请遵守：不要请模型替�
 - 一切灰区命令被 deny：L1 默认关闭（fail-closed）→ 属预期；需要模型裁决时由管理员
   置 `PHOCINAE_GUARD_L1_ENABLED=true` 并确保 8155 服务在线。
 - 服务器不可达：门不自动放行（fail-closed），先起服务再重试。
-- 审计：guard 判定逐条写入 JSONL（默认 `<cwd>/phocinae-guard.audit.jsonl`，
-  可经 `PHOCINAE_GUARD_AUDIT` 改路径）。
+- 审计：guard 判定逐条写入 JSONL。hook 默认落在用户级
+  `~/.phocinae-guard/audit.jsonl`（Windows `%USERPROFILE%\.phocinae-guard\audit.jsonl`），
+  不往项目目录写；可用 `PHOCINAE_GATE_AUDIT=off|<路径>` 或 guard 原生的
+  `PHOCINAE_GUARD_AUDIT` 覆盖（原生变量优先）。

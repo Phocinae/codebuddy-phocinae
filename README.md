@@ -1,4 +1,17 @@
+<img src="docs/assets/logo_phocinae.png" width="150" alt="斑海豹 Phocinae logo">
+
 # codebuddy-phocinae
+
+腾讯 CodeBuddy 插件：`skills` + `agents` + `hooks` + `.mcp.json`，PreToolUse 硬闸门拦 Bash 危险命令，**deny 优先、fail-closed**。
+
+<p>
+  <img alt="plugin" src="https://img.shields.io/static/v1?label=CodeBuddy&message=plugin&color=2f6feb&style=flat-square">
+  <img alt="hooks" src="https://img.shields.io/static/v1?label=PreToolUse&message=deny%20first&color=critical&style=flat-square">
+  <img alt="License" src="https://img.shields.io/static/v1?label=License&message=Apache-2.0&color=blue&style=flat-square">
+</p>
+
+<img src="docs/assets/codebuddy_tests.png" width="880" alt="清单校验与 PreToolUse hook 真实运行">
+<p><sub>▲ 真实运行：清单 22/22、hook 回归 21/21，并打印 hook 回给宿主的 `permissionDecision`</sub></p>
 
 CodeBuddy 插件：把斑海豹（[Phocinae-Largha-150M-v1](https://github.com/Phocinae/phocinae-largha-150m)）的命令审批门接入 CodeBuddy 会话。
 
@@ -27,6 +40,9 @@ codebuddy-phocinae/
 ```
 
 ## 2. 工作原理
+
+<img src="docs/assets/S01_rmrf_gate.gif" width="720" alt="S01 演示动画">
+<p><sub>▲ **合成演示动画**（模型仓 docs/gallery [S01](https://huggingface.co/Phocinae/Phocinae-Largha-150M-v1/blob/main/docs/gallery)）：画面为逐帧渲染、场景数据虚构，但它演示的 **危险命令（`rm -rf`）在 PreToolUse 阶段被毫秒级拦下的过程** 与真实实现一致（本页上方的终端截图即真实运行的同一流程）。</sub></p>
 
 ```
 Bash 命令

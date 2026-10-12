@@ -10,6 +10,23 @@ FAIL=0
 # 测试态不向仓库目录写审计文件（真实 hook 运行不受影响）
 export PHOCINAE_GUARD_AUDIT=off
 
+# 解释器探测：Windows 上只有 python，POSIX 上常常只有 python3；可用
+# PHOCINAE_GATE_PYTHON 显式指定（CI 里固定版本时用得上）。
+PY="${PHOCINAE_GATE_PYTHON:-}"
+if [ -z "$PY" ]; then
+  for candidate in python3 python py; do
+    if command -v "$candidate" >/dev/null 2>&1; then
+      PY="$candidate"
+      break
+    fi
+  done
+fi
+if [ -z "$PY" ]; then
+  echo "FAIL  找不到 Python（>=3.8）；设 PHOCINAE_GATE_PYTHON=<解释器> 后重试"
+  exit 1
+fi
+echo "使用解释器：$PY ($("$PY" --version 2>&1))"
+
 step() {  # step <名称> <命令...>
   local name="$1"; shift
   if "$@" >/dev/null 2>&1; then
@@ -20,19 +37,22 @@ step() {  # step <名称> <命令...>
 }
 
 echo "== 1. 全部 JSON 解析 + manifest 断言 =="
-step "validate_json" python3 tests/validate_json.py
+step "validate_json" "$PY" tests/validate_json.py
+
+echo "== 1b. hook 回归（B7 guard 路径 / B8 审计不落项目目录 / B9 解释器 / B20 协议）=="
+step "test_gate_hook" "$PY" tests/test_gate_hook.py
 
 echo "== 2. hook 自测（guard 模式）：良性=allow / 危险=deny / 灰区=不自动放行 =="
-step "hook_self_test_guard" python3 hooks/phocinae_gate.py --self-test
+step "hook_self_test_guard" "$PY" hooks/phocinae_gate.py --self-test
 
 echo "== 3. hook 端到端（合成 PreToolUse 载荷走 stdin；断言 rc + permissionDecision）=="
 # hook 协议：进程 rc=0 表示裁决送达（JSON 里给 permissionDecision）；rc=2=硬阻断。
 hook_res() {  # hook_res <command> → "rc decision"
   local out rc dec
   out="$(printf '{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"%s"},"cwd":"%s"}' \
-    "$1" "$ROOT" | python3 hooks/phocinae_gate.py 2>/dev/null)"
+    "$1" "$ROOT" | "$PY" hooks/phocinae_gate.py 2>/dev/null)"
   rc=$?
-  dec="$(printf '%s' "$out" | python3 -c 'import sys, json
+  dec="$(printf '%s' "$out" | "$PY" -c 'import sys, json
 try:
     print(json.load(sys.stdin).get("hookSpecificOutput", {}).get("permissionDecision", "?"))
 except Exception:
@@ -66,7 +86,7 @@ fi
 echo "== 4. 可选：8155 服务在线时的 http 模式与 guard-L1 冒烟 =="
 if curl -s -m 2 http://127.0.0.1:8155/health >/dev/null 2>&1; then
   echo "检测到 127.0.0.1:8155 服务在线，运行 http 模式自测（报告型）"
-  PHOCINAE_GATE_MODE=http python3 hooks/phocinae_gate.py --self-test
+  PHOCINAE_GATE_MODE=http "$PY" hooks/phocinae_gate.py --self-test
   HTTP_SELF=$?
   if [ "$HTTP_SELF" = "0" ]; then
     PASS=$((PASS + 1)); echo "PASS  hook_self_test_http"
@@ -74,7 +94,7 @@ if curl -s -m 2 http://127.0.0.1:8155/health >/dev/null 2>&1; then
     FAIL=$((FAIL + 1)); echo "FAIL  hook_self_test_http（exit $HTTP_SELF）"
   fi
   echo "guard-L1 冒烟（PHOCINAE_GUARD_L1_ENABLED=true，灰区命令走模型）"
-  PHOCINAE_GUARD_L1_ENABLED=true python3 hooks/phocinae_gate.py --self-test
+  PHOCINAE_GUARD_L1_ENABLED=true "$PY" hooks/phocinae_gate.py --self-test
   L1_SELF=$?
   if [ "$L1_SELF" = "0" ]; then
     PASS=$((PASS + 1)); echo "PASS  hook_self_test_guard_l1"
