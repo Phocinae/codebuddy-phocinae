@@ -13,7 +13,7 @@
 <img src="docs/assets/codebuddy_tests.png" width="880" alt="清单校验与 PreToolUse hook 真实运行">
 <p><sub>▲ 真实运行：清单 22/22、hook 回归 21/21，并打印 hook 回给宿主的 `permissionDecision`</sub></p>
 
-CodeBuddy 插件：把斑海豹（[Phocinae-Largha-150M-v1](https://github.com/Phocinae/phocinae-largha-150m)）的命令审批门接入 CodeBuddy 会话。
+CodeBuddy 插件：把斑海豹（[Phocinae-Largha-150M-v1](https://github.com/Phocinae/Phocinae-Largha-150M-v1)）的命令审批门接入 CodeBuddy 会话。
 
 **斑海豹（Phocinae Largha-150M-v1）本地非生成式决策模型 × CodeBuddy 插件**：
 Bash 命令审批门（PreToolUse 硬门，deny 优先、fail-closed、全程本地无外联）+
