@@ -190,7 +190,7 @@ def audit_files(directory):
 
 def main():
     global TMP
-    TMP = tempfile.mkdtemp(prefix="cbc-phocinae-hook-")
+    TMP = tempfile.mkdtemp(prefix="cbc-phocinae-hook-", dir=tempfile.gettempdir())
     try:
         check_manifest()
         check_b7_resolution()
