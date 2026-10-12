@@ -84,6 +84,25 @@ def run_hook(command, cwd, env, script=HOOK):
 STUB_GUARD = '''\
 import json, os, sys
 
+
+def _force_utf8_stdio():
+    """把 stdout/stderr 固定为 UTF-8。
+
+    本脚本会打印中文诊断；Windows 上 Python 默认用控制台代码页
+    （GitHub Actions runner 是 cp1252/437，本机可能是 cp936），
+    非 ASCII 直接抛 UnicodeEncodeError 让整个步骤失败。
+    这里不依赖调用方设 PYTHONUTF8：自己兜住。
+    """
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError):
+            pass
+
+
+_force_utf8_stdio()
+
+
 def main(argv):
     cmd, cwd = "", ""
     for i, arg in enumerate(argv):

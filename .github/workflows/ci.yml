@@ -5,7 +5,7 @@
 # stdlib-only suites that validate the plugin's contract.
 #
 #   * tests/validate_json.py checks the plugin/marketplace manifests, hooks.json,
-#     .mcp.json and the referenced files on disk (must print "validate_json: 22/22").
+#     .mcp.json and the referenced files on disk (must print "validate_json: 24/24").
 #   * tests/test_gate_hook.py exercises the PreToolUse gate hook end to end (must
 #     print "test_gate_hook: 21/21"). It redirects HOME and USERPROFILE to a
 #     temporary directory for every hook invocation, so it never writes to the
@@ -21,6 +21,12 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  # 非 UTF-8 控制台（windows runner 是 cp1252/437）下，打印非 ASCII 会抛
+  # UnicodeEncodeError 把 job 拖红。脚本自身已 reconfigure 兜底，
+  # 这里覆盖 pip/build 与子进程的输出。
+  PYTHONUTF8: '1'
+
 jobs:
   test:
     name: plugin suites (py${{ matrix.python-version }} on ${{ matrix.os }})
@@ -29,7 +35,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ['3.9', '3.12']
+        python-version: ['3.10', '3.12']
     steps:
       - uses: actions/checkout@v4
 
